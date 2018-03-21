@@ -2,57 +2,55 @@
 % Please edit documentation in R/rARS.R
 \name{rARS}
 \alias{rARS}
-\title{Adaptive Rejection Sampling Algorithm
-rARS generates a sequence of random variables using ARS algorithm.}
+\title{Adaptive Rejection Sampling Algorithm}
 \usage{
 rARS(n, formula, min = -Inf, max = Inf, sp)
 }
 \arguments{
-\item{n}{Desired sample size}
+\item{n}{Desired sample size;}
 
-\item{formula}{Kernal density of target log target density}
+\item{formula}{Kernal of the target density;}
 
-\item{min, max}{Domain including positive and negative infinity}
+\item{min, max}{Domain including positive and negative infinity of the target distribution;}
 
 \item{sp}{Supporting set.}
 }
 \description{
-Adaptive Rejection Sampling Algorithm
-rARS generates a sequence of random variables using ARS algorithm.
+rARS generates a sequence of random numbers using the adaptive rejection sampling algorithm.
 }
 \examples{
-###Running the following codes my take you a few minutes!
 
-#Standard normal distribution
-x<-rARS(100,"exp(-x^2/2)",-Inf,Inf,c(-2,2))
+# Example 1: Standard normal distribution
+x1 <- rARS(100,"exp(-x^2/2)",-Inf,Inf,c(-2,2))
 
-#Truncated normal distribution
-rARS(100,"exp(-x^2/2)",-2.1,2.1,c(-2,2))
+# Example 2: Truncated normal distribution
+x2 <- rARS(100,"exp(-x^2/2)",-2.1,2.1,c(-2,2))
 
-#Normal distribution with mean=2 and sd=2
-rARS(100,"exp(-(x-2)^2/(2*4))",-Inf,Inf,c(-3,3))
+# Example 3: Normal distribution with mean=2 and sd=2
+x3 <- rARS(100,"exp(-(x-2)^2/(2*4))",-Inf,Inf,c(-3,3))
 
-#Exponential distribution with rate=3
-rARS(100,"exp(-3*x)",0,Inf,c(2,3,100))
+# Example 4: Exponential distribution with rate=3
+x4 <- rARS(100,"exp(-3*x)",0,Inf,c(2,3,100))
 
-#Beta distribution
-rARS(100,"x^2*(1-x)^3",0,1,c(0.4,0.6))
+# Example 5: Beta distribution with alpha=3 and beta=4
+x5 <- rARS(100,"x^2*(1-x)^3",0,1,c(0.4,0.6))
 
-#Gamma distribution
-rARS(100,"x^(5-1)*exp(-2*x)",0,Inf,c(1,10))
+# Example 6: Gamma distribution with alpha=5 and lambda=2
+x6 <- rARS(100,"x^(5-1)*exp(-2*x)",0,Inf,c(1,10))
 
-#Student distribution
-rARS(100,"(1+x^2/10)^(-(10+1)/2)",-Inf,Inf,c(-10,2))
+# Example 7: Student distribution with df=10
+x7 <- rARS(100,"(1+x^2/10)^(-(10+1)/2)",-Inf,Inf,c(-10,2))
 
-#F distribution
-rARS(100,"x^(10/2-1)/(1+10/5*x)^(15/2)",0,Inf,c(3,10))
+# Example 8: F distribution with m=10 and n=5
+x8 <- rARS(100,"x^(10/2-1)/(1+10/5*x)^(15/2)",0,Inf,c(3,10))
 
-#Cauchy distribution
-rARS(100,"1/(1+(x-1)^2)",-Inf,Inf,c(-2,2,10))
+# Example 9:Cauchy distribution
+x9 <- rARS(100,"1/(1+(x-1)^2)",-Inf,Inf,c(-2,2,10))
 
-#Rayleigh distribution with lambda=1
-rARS(100,"2*x*exp(-x^2)",0,Inf,c(0.01,10))
+# Example 10:Rayleigh distribution with lambda=1
+x10 <- rARS(100,"2*x*exp(-x^2)",0,Inf,c(0.01,10))
+
 }
 \author{
-Zhangdong<\url{dzhang0716@126.com}>
+Dong Zhang <\url{dzhang0716@126.com}>
 }

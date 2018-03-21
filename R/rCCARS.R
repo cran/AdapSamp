@@ -1,30 +1,38 @@
 #' Concave-Convex Adaptive Rejection Sampling Algorithm
-#' rCCARS generates a sequence by Concave- Convex Adaptive Rejection Sampling algorithm from target densities with bounded domain. For unbounded domain's rCCARS can also be used for sampling approximately, especially for densities whose probability is too small in tails.
-#' @param n Desired sample size
-#' @param cvformula,ccformula Convex and concave decompositions for -ln(p(x)) where p(x) is the kernal of target density
-#' @param min,max Domain except positive and negative infinity
+#'
+#' rCCARS generates a sequence of random numbers by the concave-convex adaptive rejection sampling algorithm from target distributions with bounded domain.
+#'
+#' @param n Desired sample size;
+#' @param cvformula,ccformula Convex and concave decompositions for -ln(p(x)) where p(x) is the kernal of target density;
+#' @param min,max Domain except positive and negative infinity;
 #' @param sp Supporting set
-#' @details Strictly speaking,Concave-Convex Adaptive Rejection Sampling Algorithm can generate samples from target densities who have bounded domains. However, if the target distribution has a tiny probability in the tails, we can also use rCCARS for sampling approximately. For example, if we want to get a sequence drawn from N(0,1), and we know that
+#' @details Strictly speaking, the concave-convex adaptive rejection sampling algorithm can generate samples from target distributions who have bounded domains. For distributions with unbounded domain, rCCARS can also be used for sampling approximately. For example, if we want draw a sequence from N(0,1) by the concave-convex adaptive rejection sampling algorithm. We know that X~N(0,1) has a so small probability in two tails that we can ingore the parts at both ends. Pr(X>20)=P(X<-20)=2.753624e-89, therefore we can get random numbers approximately from N(0,1) with the bound [-20,20]. Also, you can make this bound large enough to reduce sampling error.
+#' @author Dong Zhang <\url{dzhang0716@126.com}>
 #' @references Teh Y W. Concave-Convex Adaptive Rejection Sampling[J]. Journal of Computational & Graphical Statistics, 2011, 20(3):670-691.
+#' @export
 #' @examples
-#' #Generalized inverse bounded gaussian distribution with lambda=-1 and a=b=2
+#'
+#' # Example 1: Generalized inverse bounded gaussian distribution with lambda=-1 and a=b=2
 #' x<-rCCARS(100,"x+x^-1","2*log(x)",0.001,100,1)
-#' hist(x,breaks=20,probability = TRUE);lines(density(x,bw=0.1),col="red",lwd=2,lty=2)
+#' hist(x,breaks=20,probability =TRUE);lines(density(x,bw=0.1),col="red",lwd=2,lty=2)
 #' f <- function(x) {x^(-2)*exp(-x-x^(-1))/0.2797318}
 #' lines(seq(0,5,0.01),f(seq(0,5,0.01)),lwd=2,lty=3,col="blue")
 #'
-#' #Expontional bounded distribution
-#' x<-rCCARS(100,"x^4","-8*x^2+16",-3,4,c(-2,1))
-#' hist(x,breaks=30,probability=TRUE);lines(density(x,bw=0.05),col="blue",lwd=2,lty=2)
-#' f <- function(x) exp(-(x^2-4)^2)/ 0.8974381
-#' lines(seq(-3,4,0.01),f(seq(-3,4,0.01)),col="red",lty=3,lwd=2)
+#' #The following examples are also available;
+#' #But it may take a few minutes to run them.
 #'
-#' #Makeham bounded distribution
-#' x<-rCCARS(100,"x+1/log(2)*(2^x-1)","-log(1+2^x)",0,5,c(1,2,3))
-#' hist(x,breaks=30,probability=TRUE);lines(density(x,bw=0.05),col="blue",lwd=2,lty=2)
-#' f <- function(x){(1+2^x)*exp(-x-1/log(2)*(2^x-1))}
-#' plot(seq(0,5,0.01),f(seq(0,5,0.01)),col="red",lty=3,lwd=2,type="l")
-#' @export
+#' # Example 2: Expontional bounded distribution
+#' # x<-rCCARS(1000,"x^4","-8*x^2+16",-3,4,c(-2,1))
+#' # hist(x,breaks=30,probability=TRUE);lines(density(x,bw=0.05),col="blue",lwd=2,lty=2)
+#' # f <- function(x) exp(-(x^2-4)^2)/ 0.8974381
+#' # lines(seq(-3,4,0.01),f(seq(-3,4,0.01)),col="red",lty=3,lwd=2)
+#'
+#' # Example 3: Makeham bounded distribution
+#' # x<-rCCARS(1000,"x+1/log(2)*(2^x-1)","-log(1+2^x)",0,5,c(1,2,3))
+#' # hist(x,breaks=30,probability=TRUE);lines(density(x,bw=0.05),col="blue",lwd=2,lty=2)
+#' # f <- function(x){(1+2^x)*exp(-x-1/log(2)*(2^x-1))}
+#' # lines(seq(0,5,0.01),f(seq(0,5,0.01)),col="red",lty=3,lwd=2,type="l")
+#'
 rCCARS <- function(n,cvformula,ccformula,min,max,sp){
 p <- function(x){eval(parse(text=paste("exp(-(",cvformula,")-(",ccformula,"))",sp="")))}
 x_final <- numeric(n)
@@ -36,7 +44,7 @@ for( k in 1:n){
   while(u>prop){
     allpt <- sort(c(xrange,support))
     convex <- function(x){eval(parse(text=cvformula))}
-    drv1or<- function(x){eval(stats::D(parse(text=cvformula),"x"))}
+    drv1or<- function(x){eval(D(parse(text=cvformula),"x"))}
     der <- drv1or(allpt)
     crossx <- c()
     crossy <- c()
@@ -73,13 +81,13 @@ for( k in 1:n){
       fun <- function(x){
         exp(-(tan1[i]+tan2[i])*x-int1[i]-int2[i])
       }
-      IntSum[i] <- stats::integrate(fun,xconvex[i],xconvex[i+1])[[1]]
+      IntSum[i] <- integrate(fun,xconvex[i],xconvex[i+1])[[1]]
     }
     cum=c(0,cumsum(IntSum/sum(IntSum)))
-    rdm <- stats::runif(1)
+    rdm <- runif(1)
     idx <- which(rdm<cumsum(IntSum/sum(IntSum)))[1]
     x_star <- log(((rdm-cum[idx])*(-tan1[idx]-tan2[idx])*sum(IntSum))*exp(int1[idx]+int2[idx])+exp(-(tan1[idx]+tan2[idx])*xconvex[idx]))/(-tan2[idx]-tan1[idx])
-    u <- stats::runif(1)
+    u <- runif(1)
     prop=p(x_star)/exp(-(tan1[idx]+tan2[idx])*x_star-int1[idx]-int2[idx])
     support <- sort(c(x_star,support))
   }
@@ -87,4 +95,3 @@ for( k in 1:n){
 }
 x_final
 }
-
