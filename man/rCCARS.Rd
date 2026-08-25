@@ -7,47 +7,40 @@
 rCCARS(n, cvformula, ccformula, min, max, sp)
 }
 \arguments{
-\item{n}{Desired sample size;}
+\item{n}{Desired sample size (positive integer).}
 
-\item{cvformula, ccformula}{Convex and concave decompositions for -ln(p(x)) where p(x) is the kernal of target density;}
+\item{cvformula}{Convex part of \code{-log(p(x))}, as a character string.}
 
-\item{min, max}{Domain except positive and negative infinity;}
+\item{ccformula}{Concave part of \code{-log(p(x))}, as a character string.}
 
-\item{sp}{Supporting set}
+\item{min, max}{Bounded domain limits (must be finite).}
+
+\item{sp}{Supporting set; a numeric vector of initial abscissae.}
+}
+\value{
+A numeric vector of length \code{n} containing samples from the target distribution.
 }
 \description{
-rCCARS generates a sequence of random numbers by the concave-convex adaptive rejection sampling algorithm from target distributions with bounded domain.
+rCCARS generates a sequence of random numbers by the concave-convex adaptive
+rejection sampling algorithm from target distributions with bounded domain.
 }
 \details{
-Strictly speaking, the concave-convex adaptive rejection sampling algorithm can generate samples from target distributions who have bounded domains. For distributions with unbounded domain, rCCARS can also be used for sampling approximately. For example, if we want draw a sequence from N(0,1) by the concave-convex adaptive rejection sampling algorithm. We know that X~N(0,1) has a so small probability in two tails that we can ingore the parts at both ends. Pr(X>20)=P(X<-20)=2.753624e-89, therefore we can get random numbers approximately from N(0,1) with the bound [-20,20]. Also, you can make this bound large enough to reduce sampling error.
+Strictly speaking, the concave-convex adaptive rejection sampling
+  algorithm can generate samples from target distributions with bounded
+  domains. For distributions with unbounded domain, rCCARS can also be used
+  for approximate sampling by truncating the domain.
 }
 \examples{
-
-# Example 1: Generalized inverse bounded gaussian distribution with lambda=-1 and a=b=2
-x<-rCCARS(100,"x+x^-1","2*log(x)",0.001,100,1)
-hist(x,breaks=20,probability =TRUE);lines(density(x,bw=0.1),col="red",lwd=2,lty=2)
-f <- function(x) {x^(-2)*exp(-x-x^(-1))/0.2797318}
-lines(seq(0,5,0.01),f(seq(0,5,0.01)),lwd=2,lty=3,col="blue")
-
-#The following examples are also available;
-#But it may take a few minutes to run them.
-
-# Example 2: Expontional bounded distribution
-# x<-rCCARS(1000,"x^4","-8*x^2+16",-3,4,c(-2,1))
-# hist(x,breaks=30,probability=TRUE);lines(density(x,bw=0.05),col="blue",lwd=2,lty=2)
-# f <- function(x) exp(-(x^2-4)^2)/ 0.8974381
-# lines(seq(-3,4,0.01),f(seq(-3,4,0.01)),col="red",lty=3,lwd=2)
-
-# Example 3: Makeham bounded distribution
-# x<-rCCARS(1000,"x+1/log(2)*(2^x-1)","-log(1+2^x)",0,5,c(1,2,3))
-# hist(x,breaks=30,probability=TRUE);lines(density(x,bw=0.05),col="blue",lwd=2,lty=2)
-# f <- function(x){(1+2^x)*exp(-x-1/log(2)*(2^x-1))}
-# lines(seq(0,5,0.01),f(seq(0,5,0.01)),col="red",lty=3,lwd=2,type="l")
+\dontrun{
+set.seed(123)
+x <- rCCARS(100, "x+x^-1", "2*log(x)", 0.001, 100, 1)
+hist(x, breaks = 20, probability = TRUE)
+}
 
 }
 \references{
 Teh Y W. Concave-Convex Adaptive Rejection Sampling[J]. Journal of Computational & Graphical Statistics, 2011, 20(3):670-691.
 }
 \author{
-Dong Zhang <\url{dzhang0716@126.com}>
+Dong Zhang
 }

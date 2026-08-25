@@ -4,6 +4,10 @@ export(rARS)
 export(rASS)
 export(rCCARS)
 export(rMARS)
-import(pracma)
-import(stats)
-import(utils)
+importFrom(pracma,fderiv)
+importFrom(stats,
+  D,
+  integrate,
+  runif
+)
+importFrom(utils,tail)

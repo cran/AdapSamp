@@ -4,24 +4,29 @@
 \alias{rASS}
 \title{Adaptive Slice Sampling Algorithm With Stepping-Out Procedures}
 \usage{
-rASS(n, x0 = 0, formula, w = 3)
+rASS(n, x0 = 0, formula, w = 3, max_steps = 1000)
 }
 \arguments{
-\item{n}{Desired sample size;}
+\item{n}{Desired sample size (positive integer).}
 
-\item{x0}{Initial value;}
+\item{x0}{Initial value for the Markov chain.}
 
-\item{formula}{Target density function p(x);}
+\item{formula}{Target density function \code{p(x)}, as a character string.}
 
-\item{w}{Length of the coverage interval.}
+\item{w}{Length of the initial coverage interval.}
+
+\item{max_steps}{Maximum number of stepping-out iterations (default 1000).}
+}
+\value{
+A numeric vector of length \code{n} containing samples (excludes the initial value \code{x0}).
 }
 \description{
-rASS generates a sequence of random numbers by the adaptive slice sampling algorithm with stepping-out procedures.
+rASS generates a sequence of random numbers by the adaptive slice sampling
+algorithm with stepping-out procedures (Neal, 2003).
 }
 \examples{
-
-# Example 1: Sampling from exponential distribution with bounded domain
-x<-rASS(100,-1,"1.114283*exp(-(4-x^2)^2)",3)
+set.seed(123)
+x <- rASS(100, -1, "1.114283*exp(-(4-x^2)^2)", 3)
 plot(density(x))
 
 }
@@ -29,5 +34,5 @@ plot(density(x))
 Neal R M. Slice sampling - Rejoinder[J]. Annals of Statistics, 2003, 31(3):758-767.
 }
 \author{
-Dong Zhang <\url{dzhang0716@126.com}>
+Dong Zhang
 }

@@ -4,62 +4,39 @@
 \alias{rMARS}
 \title{Modified Adaptive Rejection Sampling Algorithm}
 \usage{
-rMARS(n, formula, min = -Inf, max = Inf, sp, infp, m = 10^(-4))
+rMARS(n, formula, min = -Inf, max = Inf, sp, infp, m = 1e-04)
 }
 \arguments{
-\item{n}{Desired sample size;}
+\item{n}{Desired sample size (positive integer).}
 
-\item{formula}{Kernel of the target distribution;}
+\item{formula}{Kernel of the target distribution, as a character string.}
 
-\item{min, max}{Domain including positive and negative infinity of the target distribution;}
+\item{min, max}{Domain of the target distribution, including \code{-Inf} and \code{Inf}.}
 
-\item{sp}{Supporting set;}
+\item{sp}{Supporting set; a numeric vector of initial abscissae.}
 
-\item{infp}{Inflexion set;}
+\item{infp}{Inflexion set; a numeric vector of inflexion points of \code{-log(p(x))}.}
 
-\item{m}{A parameter for judging concavity and convexity in a certain interval.}
+\item{m}{A small numeric parameter for judging concavity and convexity near inflexion points.}
+}
+\value{
+A numeric vector of length \code{n} containing samples from the target distribution.
 }
 \description{
-rMARS generates a sequence of random numbers using the modified adaptive rejection sampling algorithm.
+rMARS generates a sequence of random numbers using the modified adaptive
+rejection sampling algorithm, which extends ARS to non-log-concave densities.
 }
 \examples{
-# Example 1: Exponential distribution
-x <- rMARS(100,"exp(-(4-x^2)^2)",-Inf,Inf, c(-2.5,0,2.5),c(-2/sqrt(3),2/sqrt(3)))
-hist(x,probability=TRUE,xlim=c(-3,3),ylim=c(0,1.2),breaks=20)
-lines(density(x,bw=0.05),col="blue")
-f <- function(x)(exp(-(4-x^2)^2))
-lines(seq(-3,3,0.01),f(seq(-3,3,0.01))/integrate(f,-3,3)[[1]],lwd=2,lty=2,col="red")
-
-#The following examples are also available;
-#But it may take a few minutes to run them.
-
-# Example 2: Distribution with bounded domain
-# x <- rMARS(1000,"exp(-(x^2-x^3))",-3,2,c(-1,1),1/3)
-# hist(x,probability=TRUE,xlim=c(-3,2.5),ylim=c(0,1.2),breaks=20)
-# lines(density(x,bw=0.2),col="blue")
-# f <- function(x) exp(-(x^2-x^3))
-# lines(seq(-3,2,0.01),f(seq(-3,2,0.01))/integrate(f,-3,2)[[1]],lwd=2,lty=2,col="red",type="l")
-
-
-# Example 3: Weibull distribution with k=3 and lambda=1
-# x <- rMARS(100,"3*x^2*exp(-x^3)",10^-15,Inf,c(0.01,1),(1/3)^(1/3),m=10^-4)
-# hist(x,probability=TRUE,breaks=20,xlim=c(0,2))
-# lines(density(x,bw=0.15),col="blue")
-# f <- function(x) 3*x^2*exp(-x^3)
-# lines(seq(0,2,0.01),f(seq(0,2,0.01)),lwd=2,lty=2,col="red",type="l")
-
-
-# Example 4: Mixed normal distribution with p=0.3,m1=2,m2=8,sigma1=1,sigma2=2
-# x <- rMARS(100,"0.3/sqrt(2*pi)*exp(-(x-2)^2/2)+(1-0.3)/sqrt(2*pi)/2*exp(-(x-8)^2/8)",-Inf,Inf,
-# c(-6,-4,0,3,6,15),c(-5.120801,-3.357761,3.357761,5.120801),m=10^-8)
-# hist(x,breaks=20,probability=TRUE);lines(density(x,bw=0.45),col="blue",lwd=2)
-# f <- function(x)0.3/sqrt(2*pi)*exp(-(x-2)^2/2)+(1-0.3)/sqrt(2*pi)/2*exp(-(x-8)^2/8)
-# lines(seq(0,14,0.01),f(seq(0,14,0.01)),lty=3,col="red",lwd=2 )
+set.seed(123)
+x <- rMARS(100, "exp(-(4-x^2)^2)", -Inf, Inf,
+           c(-2.5, 0, 2.5), c(-2/sqrt(3), 2/sqrt(3)))
+hist(x, probability = TRUE, xlim = c(-3, 3), ylim = c(0, 1.2), breaks = 20)
+lines(density(x, bw = 0.05), col = "blue")
 
 }
 \references{
 Martino L, Miguez J. A generalization of the adaptive rejection sampling algorithm[J]. Statistics & Computing, 2011, 21(4):633-647.
 }
 \author{
-Dong Zhang <\url{dzhang0716@126.com}>
+Dong Zhang
 }
